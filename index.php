@@ -9,7 +9,7 @@ if (isset($_SESSION['message'])) {
 
 // Database connection
 $hostname = "mysql-netflix1.mysql.database.azure.com";
-$username = "prerana";
+$username = "prerana@mysql-netflix1";
 $password = "Ulsterazure@";
 $dbname = "videos1";
 
