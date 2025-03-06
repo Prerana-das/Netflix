@@ -13,10 +13,16 @@ $username = "prerana";
 $password = "Ulsterazure@";
 $dbname = "videos1";
 
-$conn = mysqli_connect($hostname, $username, $password, $dbname);
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
-}
+// $conn = mysqli_connect($hostname, $username, $password, $dbname);
+// if (!$conn) {
+//     die("Connection failed: " . mysqli_connect_error());
+// }
+
+$ssl_ca = "DigiCertGlobalRootCA.crt.pem"; // Default CA certificate for Azure MySQL
+
+$conn = mysqli_init();
+mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
+$connection = mysqli_real_connect($conn, $hostname, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL);
 
 // Fetch genres from the genres table
 $genreQuery = "SELECT DISTINCT genre_name FROM genres";
