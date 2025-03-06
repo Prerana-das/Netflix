@@ -8,9 +8,9 @@ if (isset($_SESSION['message'])) {
 }
 
 // Database connection
-$hostname = "localhost";
-$username = "root";
-$password = "";
+$hostname = "mysql-netflix1.mysql.database.azure.com";
+$username = "prerana";
+$password = "Ulsterazure@";
 $dbname = "videos1";
 
 $conn = mysqli_connect($hostname, $username, $password, $dbname);

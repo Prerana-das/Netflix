@@ -1,6 +1,85 @@
 <?php
 session_start();
 
+// Display success message if available
+if (isset($_SESSION['message'])) {
+    echo '<div class="alert alert-success" role="alert">' . $_SESSION['message'] . '</div>';
+    unset($_SESSION['message']);
+}
+
+// Database connection
+$hostname = "mysql-netflix1.mysql.database.azure.com";
+$username = "prerana";
+$password = "Ulsterazure@";
+$dbname = "videos1";
+
+$conn = mysqli_connect($hostname, $username, $password, $dbname);
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// Fetch genres from the genres table
+$genreQuery = "SELECT DISTINCT genre_name FROM genres";
+$genreResult = mysqli_query($conn, $genreQuery);
+$genres = [];
+if ($genreResult && mysqli_num_rows($genreResult) > 0) {
+    while ($row = mysqli_fetch_assoc($genreResult)) {
+        $genres[] = $row['genre_name'];
+    }
+}
+
+// Fetch age ratings from the agerating table
+$ageRatingQuery = "SELECT DISTINCT rating_name FROM agerating";
+$ageRatingResult = mysqli_query($conn, $ageRatingQuery);
+$ageRatings = [];
+if ($ageRatingResult && mysqli_num_rows($ageRatingResult) > 0) {
+    while ($row = mysqli_fetch_assoc($ageRatingResult)) {
+        $ageRatings[] = $row['rating_name'];
+    }
+}
+
+// Check if the user clicked the search button
+if (isset($_POST['search'])) {
+    $search = $_POST['search'];
+    $genre = isset($_POST['genre']) ? $_POST['genre'] : '';
+    $ageRating = isset($_POST['age_rating']) ? $_POST['age_rating'] : '';
+
+    // Construct the query based on search terms
+    $query = "SELECT * FROM videos WHERE (title LIKE '%$search%' OR description LIKE '%$search%' OR Producer LIKE '%$search%' OR Genre LIKE '%$search%' OR AgeRating LIKE '%$search%')";
+    if ($genre != '') {
+        $query .= " AND Genre = '$genre'";
+    }
+    if ($ageRating != '') {
+        $query .= " AND AgeRating = '$ageRating'";
+    }
+
+    $result = mysqli_query($conn, $query);
+} else {
+    // If not, fetch all videos
+    $query = "SELECT * FROM videos";
+    $result = mysqli_query($conn, $query);
+}
+
+// // Process sign-up form submission
+// if (isset($_POST['signup'])) {
+//     $username = $_POST['username'];
+//     $password = $_POST['password'];
+//     $fname = $_POST['fname'];
+//     $lname = $_POST['lname'];
+//     $email = $_POST['email'];
+//     $contact = $_POST['contact'];
+
+//     // Insert data into users table
+//     $signup_query = "INSERT INTO users (username, password, FName, LName, Email, ContactNumber) VALUES ('$username', '$password', '$fname', '$lname', '$email', '$contact')";
+//     if (mysqli_query($conn, $signup_query)) {
+//         // Redirect to sign-in page after successful sign-up
+//         header("Location: index2222.php");
+//         exit();
+//     } else {
+//         echo "Error: " . $signup_query . "<br>" . mysqli_error($conn);
+//     }
+// }
+
 ?>
 
 <!DOCTYPE html>
@@ -358,9 +437,34 @@ session_start();
 
     </div>
 
+    <script>
+        // Show sign-in form when "Sign In" link is clicked
+        document.getElementById("signin-link").addEventListener("click", function(e) {
+            e.preventDefault();
+            document.getElementById("signin-form").style.display = "block";
+            document.getElementById("signup-form").style.display = "none";
+        });
+
+        // Show sign-up form when "Sign Up" link is clicked
+        document.getElementById("signup-link").addEventListener("click", function(e) {
+            e.preventDefault();
+            document.getElementById("signup-form").style.display = "block";
+            document.getElementById("signin-form").style.display = "none";
+        });
+
+        // Close sign-in and sign-up forms when close button is clicked
+        document.querySelectorAll(".close-btn").forEach(function(closeBtn) {
+            closeBtn.addEventListener("click", function() {
+                document.getElementById("signin-form").style.display = "none";
+                document.getElementById("signup-form").style.display = "none";
+            });
+        });
+    </script>
 
 </body>
 
 </html>
 
-
+<?php
+mysqli_close($conn);
+?>
