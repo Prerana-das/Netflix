@@ -7,22 +7,35 @@ if (isset($_SESSION['message'])) {
     unset($_SESSION['message']);
 }
 
-// Database connection
 $hostname = "netflix.mysql.database.azure.com";
 $username = "prerana";
 $password = "Ulsterazure@";
 $dbname = "videos1";
 
-// $conn = mysqli_connect($hostname, $username, $password, $dbname);
-// if (!$conn) {
-//     die("Connection failed: " . mysqli_connect_error());
-// }
+// SSL Configuration - Update path to match your project structure
+$ssl_ca = __DIR__ . '/ssl/DigiCertGlobalRootCA.crt.pem';
 
-$ssl_ca = "DigiCertGlobalRootCA.crt.pem"; // Default CA certificate for Azure MySQL
-
+// Establish connection
 $conn = mysqli_init();
-mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
-$connection = mysqli_real_connect($conn, $hostname, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL);
+mysqli_options($conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+mysqli_ssl_set(
+    $conn,
+    NULL,  // No client key
+    NULL,  // No client certificate
+    $ssl_ca,
+    NULL,  // No CA path
+    NULL   // No cipher
+);
+
+if (!mysqli_real_connect($conn, $hostname, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL)) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+// $ssl_ca = "DigiCertGlobalRootCA.crt.pem"; // Default CA certificate for Azure MySQL
+
+// $conn = mysqli_init();
+// mysqli_ssl_set($conn, NULL, NULL, $ssl_ca, NULL, NULL);
+// $connection = mysqli_real_connect($conn, $hostname, $username, $password, $dbname, 3306, NULL, MYSQLI_CLIENT_SSL);
 
 // Fetch genres from the genres table
 $genreQuery = "SELECT DISTINCT genre_name FROM genres";
