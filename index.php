@@ -7,9 +7,9 @@ if (isset($_SESSION['message'])) {
     unset($_SESSION['message']);
 }
 
-$hostname = "netflix.mysql.database.azure.com";
-$username = "prerana";
-$password = "Ulsterazure@";
+$hostname = "prerana.mysql.database.azure.com";
+$username = "preranaadmin";
+$password = "helloworld123@";
 $dbname = "videos1";
 
 // SSL Configuration - Update path to match your project structure

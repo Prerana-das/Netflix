@@ -1,0 +1,37 @@
+organization name = ulster
+
+bucket name = system_data
+
+token = iKmfugKpeHgQnMj_ViEMlCNvrKdyJYHHxGzICW6iTLZseKaDwvDDCZZaHXNq3KpMDthpv-vugRVwzRTiBtnk2w==
+
+####Telegraf
+
+>>provided by lecturer
+
+
+
+urls = ["http://127.0.0.1:8086"]  # Change this if InfluxDB is running elsewhere
+token = "iKmfugKpeHgQnMj_ViEMlCNvrKdyJYHHxGzICW6iTLZseKaDwvDDCZZaHXNq3KpMDthpv-vugRVwzRTiBtnk2w=="
+organization = "ulster"
+bucket = "system_data"
+
+
+
+[agent]
+  interval = "10s"
+
+# Input Plugin - Collect System metrics (replace Windows with system)
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  fieldpass = ["usage_system", "usage_user", "usage_idle"]
+
+[[inputs.mem]]
+  fieldpass = ["used_percent", "used", "free"]
+
+# Output Plugin - Send data to InfluxDB
+[[outputs.influxdb_v2]]
+  urls = ["http://localhost:8086"]
+  token = "iKmfugKpeHgQnMj_ViEMlCNvrKdyJYHHxGzICW6iTLZseKaDwvDDCZZaHXNq3KpMDthpv-vugRVwzRTiBtnk2w=="
+  organization = "ulster"
+  bucket = "system_data"
