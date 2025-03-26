@@ -9,7 +9,7 @@ if (isset($_SESSION['message'])) {
 
 $hostname = "prerana.mysql.database.azure.com";
 $username = "preranaadmin";
-$password = "helloworld123@";
+$password = "helloword123@";
 $dbname = "videos1";
 
 // SSL Configuration - Update path to match your project structure
